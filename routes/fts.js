@@ -10,7 +10,7 @@ var bucket = cb.bucket();
  */
 var SPACES = ['\u0009', '\u000a', '\u000b', '\u000c', '\u000d', '\u0020', '\u00a0', '\u1680', '\u180e', '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\    u2009', '\u200a', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000'];
 var NEWLINES = ['\u000a', '\u000d', '\u2028', '\u2029'];
-var IGNORE = ["!", "\"", '§','$', '%', '&', '/', '(', ')', '=', '?', '`', '*', '+', '\'', '#', ',',';', ':', '.', '-', '_', '<', '>', '¡', '“', '¶', '¢', '[', ']','|','{','}','≠','¿', '≠'];
+var IGNORE = ["!", "\"", '§', '$', '%', '&', '/', '(', ')', '=', '?', '`', '*', '+', '\'', '#', ',' ,';', ':', '.', '-', '_', '<', '>', '¡', '“', '¶', '¢', '[', ']','|','{','}','≠','¿', '≠'];
 
 //Gloabal counter
 var count = -1;
@@ -28,7 +28,7 @@ router.get('/fts', function (req, res) {
 /**
  * Index based on the text
  */
-router.get('/fts/indexit', function (req, res) {
+router.post('/fts/indexit', function (req, res) {
 
    //Reset the global counter
    count = 0;
@@ -218,43 +218,52 @@ router.get('/fts/search', function (req, res) {
  */
 function tokenize(text) {
 
-    //Decode the uri component in order to make sure that we have a unicode string
-    var decoded = decodeURIComponent(text);
-
-    //Identify tokens
-    var tokenized = decoded;
-
-    for (i = 0; i < IGNORE.length; i++) {
-	
-	  var ignore = IGNORE[i];
-	  tokenized = tokenized.replace(new RegExp(escapeRegExp(ignore),'g'), " ");
-    }
-
-
-    for (i = 0; i < SPACES.length; i++) {
-
-	   var sp = SPACES[i];
-	   tokenized = tokenized.replace(new RegExp(escapeRegExp(sp),'g'), "#");
-    }
-
-    for (i = 0; i < NEWLINES.length; i++) {
-	
-	    var nl = NEWLINES[i];
-	    tokenized = tokenized.replace(new RegExp(escapeRegExp(nl),'g'), "#");
-    }
-
-    var tmp = tokenized.split('#');
-
     var result = []
+    
+    //Decode the uri component in order to make sure that we have a unicode string
+    try {
+    
+        var decoded = decodeURIComponent(text);
 
-    for (i = 0; i < tmp.length; i++) {
+        //Identify tokens
+        var tokenized = decoded;
 
-	    if ( tmp[i] != "" ) {
+        for (i = 0; i < IGNORE.length; i++) {
 
-		    result.push(tmp[i]);
-	    }
+          var ignore = IGNORE[i];
+          tokenized = tokenized.replace(new RegExp(escapeRegExp(ignore),'g'), " ");
+        }
+
+
+        for (i = 0; i < SPACES.length; i++) {
+
+           var sp = SPACES[i];
+           tokenized = tokenized.replace(new RegExp(escapeRegExp(sp),'g'), "#");
+        }
+
+        for (i = 0; i < NEWLINES.length; i++) {
+
+            var nl = NEWLINES[i];
+            tokenized = tokenized.replace(new RegExp(escapeRegExp(nl),'g'), "#");
+        }
+
+        var tmp = tokenized.split('#');
+
+        for (i = 0; i < tmp.length; i++) {
+
+            if ( tmp[i] != "" ) {
+
+                result.push(tmp[i]);
+            }
+        }
+
     }
-
+    catch (err) {
+        
+        //decodeURIComponent can cause an exception
+        console.log(err);     
+    }
+        
     return result;
 }
 

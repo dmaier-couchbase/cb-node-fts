@@ -18,7 +18,8 @@ app.config(function($routeProvider) {
    
     
     $routeProvider
-    //-- cean: Routes
+    //-- cean: Routes 
+    .when('/search.html', { templateUrl : 'views/search.html', controller : 'SearchCtrl' })
     .when('/', {
        templateUrl : 'views/main.html',
        controller : 'MyCtrl'

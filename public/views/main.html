@@ -4,16 +4,29 @@
 
     <div class = "well">
         
-        <h3>Welcome!</h3>
+        <h3> Welcome! </h3>
     
         <p>
-            {{msg}}
+            This page allows you to add text which will be full text indexed by the simple Node.js based Full Text Index/Search Service.
         </p>
     </div>
     
     <form id="add" role="form">
-        <button id="buttonAdd" class="btn btn-default" ng-click="onAddClicked()">Add Test Document</button>
+         <div class="form-group">
+                     <label for="inputId">Id*</label>
+                     <input id="inputId" ng-model="inputId" type="text" class="form-control" placeholder="Enter the Id here!"/>
+         </div>
+         <div class="form-group">
+                     <label for="inputMsg">Message*</label>
+                     <input id="inputMsg" ng-model="inputMsg" type="text" class="form-control" placeholder="Enter your text here!"/>
+         </div>
+        
+        <button id="buttonAdd" class="btn btn-default" ng-click="onAddClicked(inputId, inputMsg)">Add</button>
     </form>
+</div>
+
+<div class="alert {{msg_status}}">
+  <strong>{{msg}}</strong>
 </div>
 
 <div ng-include="'views/footer.html'"/>

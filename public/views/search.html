@@ -1,0 +1,45 @@
+<div ng-include="'views/header.html'"/>
+
+<div class = "row marketing">
+
+    <div class = "well">
+        
+	    <h3> Search </h3>
+	       This page allows you to search the inverted index.
+        </p>
+    </div>
+
+    <form id="search" role="form">
+         <div class="form-group">
+                     <label for="inputWords">Words*</label>
+                     <input id="inputWords" ng-model="inputWords" type="text" class="form-control" placeholder="Enter your search words here!"/>
+         </div>
+        
+        <button id="buttonSearch" class="btn btn-default" ng-click="onSearchClicked(inputWords)">Search</button>
+    </form>
+</div>
+
+
+<div class="container {{result_status}}">
+  <h4>Result</h4>    
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Text</th>
+      </tr>
+    </thead>
+    <tbody ng-repeat="e in result">
+        <tr>
+            <td>{{e.id}}</td>
+            <td>{{e.text}}</td>
+        </tr>
+    </tbody>
+   </table>
+</div>
+
+<div class="alert {{msg_status}}">
+  <strong>{{msg}}</strong>
+</div>
+
+<div ng-include="'views/footer.html'"/>

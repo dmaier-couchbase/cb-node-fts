@@ -24,10 +24,7 @@ router.post('/add', function (req, res) {
          
             if (err)
             {
-                var emsg = "Could not add the document!";
-                console.log("ERROR " + emsg);
-                res.json({ "error" : emsg });
-                
+                res.status(500).json({ "error" : "Could not add the document!" });   
             }
             else
             {
@@ -38,9 +35,7 @@ router.post('/add', function (req, res) {
     }
     else
     {
-        var emsg = "Did you pass all mandatory parameters?";
-        console.log("ERROR: " + emsg); 
-        res.json({"error" : emsg});
+        res.status(500).json({"error" : 'Did you pass all mandatory parameters? ["id", "msg"]'});
     }    
 });
 
@@ -60,14 +55,10 @@ router.get('/get', function (req, res) {
           
             if (err)
             { 
-                var emsg = "Could not get the document!";
-                console.log("ERROR" + emsg);
-                res.json({ "error" : emsg });
-                
+                res.status(500).json({ "error" : "Could not get the document!" });                
             }
             else
             {
-                console.log("Got " + JSON.stringify(cbres));
                 res.json(cbres);
             }
             
@@ -75,9 +66,7 @@ router.get('/get', function (req, res) {
     }
     else
     {
-        var emsg = "Did you pass all mandatory parameters?";
-        console.log("ERROR: " + emsg); 
-        res.json({"error" : emsg});
+        res.status(500).json({"error" : 'Did you pass all mandatory parameters? ["id"]'});
     }    
 });
 

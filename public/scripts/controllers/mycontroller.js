@@ -8,57 +8,66 @@
  */
 var app = angular.module('cb-node-fts');
 
-app.controller('MyCtrl', function($scope, MyService) {
+app.controller('MyCtrl', function($scope, MyService, FtsService) {
     
-   //Get the message from Couchbase
-   var id = "hello";
     
-   $scope.msg = "This is the CEAN stack application skeleton!"; 
-       
-   MyService.get(id).then(
-       
-       function(ctx) {
-        
-           var result = ctx.data;
-           
-           if (!result.error)
-           {
-                var value = result.value; 
-           
-               //Set the model
-               if (value.msg) $scope.msg = value.msg;   
-           }
-       }
-   );
-   
+   $scope.msg_status = "alert-info hidden";    
     
    //Execute when add is clicked
-   $scope.onAddClicked = function () {
+   $scope.onAddClicked = function (id, msg) {
     
-       var id = "hello";
-       var msg = "Hello Couchbase!";
+       //Validate
+       var validated = true;
        
-       MyService.add(id, msg).then(
-         
-           function(ctx) { 
-            
-               var result = ctx.data;
-               
-               if (result.error)
-               {
-                    $scope.msg = result.error;
-               }
-               else
-               {
-                   $scope.msg = "Successfully added a document to your Couchbase bucket!";
-               }
-           },
+       if (id == null || id  =='') validated = false;
+       if (msg == null || msg =='') validated = false;
+       
+       if (!validated) { 
            
-           function(error) {
-               
-               $scope.msg = "Please configure your Couchbase connection!";       
-           }
+           $scope.msg_status = "alert-warning";
+           $scope.msg ='You did not pass all mandatory parameters!';
+       }
+       else {
            
-       );
-   }  
+           MyService.add(id, msg).then(
+
+               function(ctx) { 
+
+                   var result = ctx.data;
+
+                   if (result.error)
+                   {
+                        $scope.msg_status = "alert-danger";
+                        $scope.msg = 'Error: ' + JSON.stringify(result.error);
+                   }
+                   else
+                   {
+                       FtsService.indexit(id, msg).then(
+                           
+                           function(ctx2) {
+                            
+                                $scope.msg_status = "alert-success";
+                                $scope.msg = 'Successfully added.';
+                               
+                           },
+                           function(error2) {
+                               
+                               $scope.msg_status = "alert-danger";
+                               $scope.msg = 'An internal error occoured: ' + JSON.stringify(error2.data.error);  
+                           }
+                        );
+                           
+                      
+                   }
+               },
+
+               function(error) {
+
+                   $scope.msg_status = "alert-danger";
+                   $scope.msg = 'An internal error occoured: ' + JSON.stringify(error.data.error);      
+               }
+
+           );
+       }  
+   }
 });
